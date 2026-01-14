@@ -1,0 +1,205 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>타이핑 던전</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=DungGeunMo&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #ff00ff;
+            --secondary-color: #33ccff;
+            --bg-dark: #0c001a;
+        }
+
+        body {
+            font-family: 'DungGeunMo', monospace;
+            background: var(--bg-dark);
+            margin: 0;
+            overflow-x: hidden;
+            user-select: none;
+            color: var(--primary-color);
+            background-image: 
+                radial-gradient(circle at 50% 50%, #1a0033 0%, #0c001a 100%),
+                url('https://www.transparenttextures.com/patterns/stardust.png');
+        }
+        .pixel-font {
+            font-family: 'DungGeunMo', monospace;
+        }
+        
+        /* Cyber-Y2K Terminal Window */
+        .cyber-window {
+            background: rgba(12, 0, 26, 0.95);
+            border: 2px solid var(--primary-color);
+            /* 그림자 색상을 변수에 연동 */
+            box-shadow: 0 0 15px var(--primary-color), inset 0 0 10px rgba(255, 255, 255, 0.1);
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .cyber-title-bar {
+            background: linear-gradient(90deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            border-bottom: 2px solid var(--primary-color);
+            color: #000;
+            text-shadow: 1px 1px 0 rgba(255,255,255,0.3);
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+
+        .cyber-btn {
+            background: rgba(255, 0, 255, 0.05);
+            border: 1px solid var(--secondary-color);
+            color: var(--secondary-color);
+            text-shadow: 0 0 5px var(--secondary-color);
+            transition: all 0.2s ease;
+            cursor: pointer;
+            box-shadow: inset 0 0 5px rgba(0, 255, 255, 0.1);
+            border-radius: 6px;
+        }
+        .cyber-btn:hover {
+            background: rgba(0, 255, 255, 0.1);
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            text-shadow: 0 0 8px var(--primary-color);
+            box-shadow: 0 0 10px var(--primary-color);
+        }
+        .cyber-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* HUD Stats Panels (이제 사용하지 않지만 보관) */
+        .hud-panel {
+            background: rgba(0, 255, 255, 0.03);
+            border-left: 4px solid var(--secondary-color);
+            border-right: 1px solid rgba(0, 255, 255, 0.1);
+            border-top: 1px solid rgba(0, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(0, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+            border-radius: 6px;
+        }
+        .hud-panel::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 2px;
+            background: linear-gradient(90deg, var(--secondary-color), transparent);
+        }
+
+        /* CRT MONITOR STYLES */
+        .crt-container {
+            position: relative;
+            background: #000;
+            overflow: hidden;
+            border: 4px solid #333;
+            outline: 2px solid var(--primary-color);
+            box-shadow: 0 0 20px var(--primary-color);
+            border-radius: 8px;
+        }
+        .crt-screen {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background: #050505;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .crt-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.3) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.04), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.04));
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+            z-index: 30;
+        }
+        .crt-flicker {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(255, 255, 255, 0.01);
+            z-index: 31;
+            pointer-events: none;
+            animation: flicker 0.15s infinite;
+        }
+        @keyframes flicker {
+            0% { opacity: 0.1; }
+            50% { opacity: 0.05; }
+            100% { opacity: 0.1; }
+        }
+        .monster-glow {
+            filter: drop-shadow(0 0 10px var(--primary-color));
+        }
+        .pixel-floor {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 40px;
+            background-image: 
+                linear-gradient(45deg, var(--primary-color) 25%, transparent 25%), 
+                linear-gradient(-45deg, var(--primary-color) 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, var(--primary-color) 75%),
+                linear-gradient(-45deg, transparent 75%, var(--primary-color) 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+            background-color: #440044;
+            z-index: 10;
+            opacity: 0.6;
+        }
+
+        .theme-slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 12px;
+            background: linear-gradient(to right, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000);
+            border-radius: 6px;
+            outline: none;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .theme-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border: 2px solid #000;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 5px rgba(0,0,0,0.5);
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translate(0, 0); }
+            25% { transform: translate(-1px, 1px); }
+            50% { transform: translate(1px, -1px); }
+            75% { transform: translate(-1px, -1px); }
+        }
+        .animate-shake {
+            animation: shake 0.1s infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^18.2.0",
+    "react-dom": "https://esm.sh/react-dom@^18.2.0",
+    "react-dom/": "https://esm.sh/react-dom@^18.2.0/",
+    "react/": "https://esm.sh/react@^18.2.0/"
+  }
+}
+</script>
+</head>
+<body>
+    <div id="root"></div>
+</body>
+</html>

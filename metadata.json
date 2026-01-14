@@ -1,0 +1,5 @@
+{
+  "name": "Typing Dungeon",
+  "description": "A gamified writing productivity tool where your words deal damage to monsters and idle time lets them heal.",
+  "requestFramePermissions": []
+}
